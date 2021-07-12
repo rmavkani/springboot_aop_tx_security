@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "seyon/patient")
+@RequestMapping(path = "seyon")
 public class RegistrationController {
 
 	private final RegistrationService registrationService;
@@ -20,7 +20,7 @@ public class RegistrationController {
 		this.registrationService = registrationService;
 	}
 
-	@GetMapping
+	@GetMapping("/patient")
 	public List<Patient> getPatient() {
 		return registrationService.getPatient();
 	}
@@ -29,5 +29,12 @@ public class RegistrationController {
 	public void savePatient(@RequestBody Patient patient) {
 		registrationService.savePatient(patient);
 	}
+
+	//seyon/user?id=101
+	@GetMapping("/user/{id}")
+	public List<Patient> getUser(@RequestParam String id , @PathVariable("user") String user) {		
+		return registrationService.getPatient();
+	}
+	
 
 }
