@@ -19,10 +19,12 @@ import static com.seyon.security.ApplicationUserRole.*;
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter{
 
 private final PasswordEncoder passwordEncoder;  
+private final UserDetailsService userDetailsService;
 
 @Autowired 
-ApplicationSecurityConfig(PasswordEncoder passwordEncoder){
+ApplicationSecurityConfig(PasswordEncoder passwordEncoder, UserDetailsService userDetailsService){
   this.passwordEncoder = passwordEncoder;
+  this.userDetailsService= userDetailsService;
 }
 
 @Override
@@ -83,6 +85,7 @@ protected void configure(HttpSecurity http)throws Exeption{
         .httpBasic(); */
 }
 
+/* InMemoryUserDetailsManager
 @Override
 @Bean 
 protected UserDetailsService userDetailsService(){
@@ -102,6 +105,19 @@ protected UserDetailsService userDetailsService(){
 
   return new InMemoryUserDetailsManager(){
     patient, admin 
+  } */
+
+  @Override
+  protected void configure(AuthenticationManagerBuilder auth) throws Exception{
+    auth.authenticationProvider(daoAuthenticationProvider());
+  }
+
+  @Bean
+  public DaoAuthenticationProvider daoAuthenticationProvider(){
+    DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+    provider.setPasswordEncoder(passwordEncoder);
+    provider.setUserDetailsService(userDetailsService);
+    return provider; 
   }
 
 }
