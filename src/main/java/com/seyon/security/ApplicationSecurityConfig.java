@@ -7,7 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.userDetailsService; 
 import org.springframework.security.crypto.password.PasswordEncoder; 
 import org.springframework.beans.factory.anotation.Autowired; 
-import org.springframwork.context.anotation.Bean; 
+import org.springframework.context.anotation.Bean; 
+import org.springframework.security.web.csrf.CookiesCsrfTokenRepository;
 
 import static com.seyon.security.ApplicationUserRole.*; 
 
@@ -26,7 +27,19 @@ ApplicationSecurityConfig(PasswordEncoder passwordEncoder){
 
 @Override
 protected void configure(HttpSecurity http)throws Exeption{
-    http.csrf().disable().
+    http.csrf()
+        .csrfTokenRepository(CookiesCsrfTokenRepository.withHttpOnlyFalse())
+        .and()
+        .authorizeRequests()
+        .antMatchers("/","index").permitAll()
+        .antMatchers("/seyon/api/**").hasRole(PATIENT.name())
+        .anyRequest()
+        .authenticated()
+        .and()
+        .httpBasic();
+
+    
+    /* http.csrf().disable().
         .authorizeRequests()
         .antMatchers("/", "index", "/css/*").permitAll()
         .antMatchers("/seyon/api/**").hasRole(PATIENT.name())
@@ -36,7 +49,7 @@ protected void configure(HttpSecurity http)throws Exeption{
       //  .antMatchers(HttpMethod.DELETE, "/seyon/api/**").hasAuthority(PATIENT_READ.getPermission())
         .anyRequest().authenticated()
         .and()
-        .httpBasic();
+        .httpBasic(); */
 }
 
 @Override
