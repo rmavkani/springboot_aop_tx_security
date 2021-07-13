@@ -21,11 +21,13 @@ public class RegistrationController {
 	}
 
 	@GetMapping("/patient")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_PATIENT')")
 	public List<Patient> getPatient() {
 		return registrationService.getPatient();
 	}
 	
 	@PostMapping
+	@PreAuthorize("hasAuthority('patient:write')")
 	public void savePatient(@RequestBody Patient patient) {
 		registrationService.savePatient(patient);
 	}
