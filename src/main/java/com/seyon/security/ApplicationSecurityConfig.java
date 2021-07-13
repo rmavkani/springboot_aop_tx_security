@@ -27,7 +27,37 @@ ApplicationSecurityConfig(PasswordEncoder passwordEncoder){
 
 @Override
 protected void configure(HttpSecurity http)throws Exeption{
-    http.csrf()
+    
+    http.csrf().disable()
+        .and()
+        .authorizeRequests()
+        .antMatchers("/","index").permitAll()
+        .antMatchers("/seyon/api/**").hasRole(PATIENT.name())
+        .anyRequest()
+        .authenticated()
+        .and()
+        .formLogin()
+          .loginPage("/login")
+          .permitAll()
+          .defaultSuccessURl("/index", true)
+          .passwordParameter("password")
+          .usernameParameter("username")
+        .and()
+        .rememberMe()
+          .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21))
+          .key("strongvalidkey")
+          .rememberMeParameter("remember-me")
+        .and()
+        .logout()
+          .logoutUrl("/logout")
+          .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
+          .clearAuthentication(true)
+          .invalidateHttpSession(true)
+          .deleteCookies("JSESSIONID", "remember-me")
+          .logoutSucessfulUrl("/login")
+
+    /* CSRF token auth
+        http.csrf()
         .csrfTokenRepository(CookiesCsrfTokenRepository.withHttpOnlyFalse())
         .and()
         .authorizeRequests()
@@ -37,9 +67,10 @@ protected void configure(HttpSecurity http)throws Exeption{
         .authenticated()
         .and()
         .httpBasic();
-
+    */
     
-    /* http.csrf().disable().
+    /* HTTP Basic - Auth 
+    http.csrf().disable().
         .authorizeRequests()
         .antMatchers("/", "index", "/css/*").permitAll()
         .antMatchers("/seyon/api/**").hasRole(PATIENT.name())
