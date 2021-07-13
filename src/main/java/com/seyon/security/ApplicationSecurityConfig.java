@@ -14,6 +14,7 @@ import static com.seyon.security.ApplicationUserRole.*;
 
 @Confguration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter{
 
 private final PasswordEncoder passwordEncoder;  
