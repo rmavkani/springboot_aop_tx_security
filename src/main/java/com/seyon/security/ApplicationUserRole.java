@@ -19,4 +19,12 @@ public Set<ApplicationUserPermission> getPersmissions(){
   return permissions; 
 }
 
+public Set<SimpleGrantedAuthority> getGrantedAuthorities(){
+  Set<SimpleGrantedAuthority> authorities = getPersmissions.stream()
+                                                           .map(permission -> new SimpleGrantedAuthority(permission.getPersmission()))
+                                                           .collect(Collectors.toSet());
+  authorities.add(new SimpleGrantedAuthority("ROLE_"+this.name()))  ;
+  return authorities;                                                       
+}
+
 }

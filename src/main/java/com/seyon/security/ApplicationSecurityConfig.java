@@ -25,10 +25,15 @@ ApplicationSecurityConfig(PasswordEncoder passwordEncoder){
 
 @Override
 protected void configure(HttpSecurity http)throws Exeption{
-    http.authorizeRequests()
-        .antMatchers("/", "index", "/css/*")
+    http.csrf().disable().
+        .authorizeRequests()
+        .antMatchers("/", "index", "/css/*").permitAll()
         .antMatchers("/seyon/api/**").hasRole(PATIENT.name())
-        .permitAll().anyRequest().authenticated()
+        //.antMatchers(HttpMethod.PUT, "/seyon/api/**").hasAuthority(PATIENT_READ.getPermission())
+    // .antMatchers(HttpMethod.GET, "/seyon/api/**").hasAuthority(PATIENT_READ.getPermission())
+     //   .antMatchers(HttpMethod.POST, "/seyon/api/**").hasAuthority(PATIENT_READ.getPermission())
+      //  .antMatchers(HttpMethod.DELETE, "/seyon/api/**").hasAuthority(PATIENT_READ.getPermission())
+        .anyRequest().authenticated()
         .and()
         .httpBasic();
 }
@@ -39,13 +44,15 @@ protected UserDetailsService userDetailsService(){
   UserDetails patient = User.build()
                           .userName("patient")
                           .password(passwordEncoder.encode("password"))
-                          .roles(PATIENT.name())
+                          //.roles(PATIENT.name())
+                          .authorities(PATIENT.getGrantedAuthorities())
                           .build();
   
   UserDetails admin = User.build()
                           .userName("admin")
                           .password(passwordEncoder.encode("adminpassword"))
-                          .roles(ADMIN.name())
+                          //.roles(ADMIN.name())
+                          .authorities(ADMIN.getGrantedAuthorities())
                           .build();
 
   return new InMemoryUserDetailsManager(){
