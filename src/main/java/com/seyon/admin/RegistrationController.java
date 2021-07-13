@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "seyon")
+@RequestMapping(path = "seyon/api")
 public class RegistrationController {
 
 	private final RegistrationService registrationService;
