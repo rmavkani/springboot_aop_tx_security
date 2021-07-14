@@ -20,16 +20,31 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter{
 
 private final PasswordEncoder passwordEncoder;  
 private final UserDetailsService userDetailsService;
+private final SecretKey secretKey;
+private final JwtConfig jwtConfig;
 
 @Autowired 
-ApplicationSecurityConfig(PasswordEncoder passwordEncoder, UserDetailsService userDetailsService){
+ApplicationSecurityConfig(PasswordEncoder passwordEncoder, 
+                          UserDetailsService userDetailsService,
+                          SecretKey secretKey,
+                          JwtConfig jwtConfig){
   this.passwordEncoder = passwordEncoder;
   this.userDetailsService= userDetailsService;
+  this.secretKey = secretKey;
+  this.jwtConfig=jwtConfig;
 }
 
 @Override
 protected void configure(HttpSecurity http)throws Exeption{
+
+    http.csrf().disable()
+        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .and()
+        .addFilter(new JwtAuthencticationFilter(authenticationManager(), jwtConfig, secretKey))
+        .addFilterAfter(new JwtTokenVerifier(secretKey,jwtConfig),JwtAuthencticationFilter.class ) 
+           
     
+    /* DB Auth based on Formbased 
     http.csrf().disable()
         .and()
         .authorizeRequests()
@@ -57,7 +72,7 @@ protected void configure(HttpSecurity http)throws Exeption{
           .invalidateHttpSession(true)
           .deleteCookies("JSESSIONID", "remember-me")
           .logoutSucessfulUrl("/login")
-
+    */
     /* CSRF token auth
         http.csrf()
         .csrfTokenRepository(CookiesCsrfTokenRepository.withHttpOnlyFalse())
