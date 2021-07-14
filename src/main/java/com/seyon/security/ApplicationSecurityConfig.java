@@ -41,7 +41,13 @@ protected void configure(HttpSecurity http)throws Exeption{
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .addFilter(new JwtAuthencticationFilter(authenticationManager(), jwtConfig, secretKey))
-        .addFilterAfter(new JwtTokenVerifier(secretKey,jwtConfig),JwtAuthencticationFilter.class ) 
+        .addFilterAfter(new JwtTokenVerifier(secretKey,jwtConfig),JwtAuthencticationFilter.class )
+        .authorizeRequest()
+        .antMatchers("/","/login").permitAll()
+        .antMatchers("/seyon/api/**").hasRole(PATIENT.name())
+        .anyRequest()
+        .authenticated();
+
            
     
     /* DB Auth based on Formbased 
