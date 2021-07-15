@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "seyon/api")
+@RequestMapping(path = "seyon/api/registration")
 public class RegistrationController {
 
 	private final RegistrationService registrationService;
@@ -22,7 +22,7 @@ public class RegistrationController {
 
 	@GetMapping("/patient")
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_PATIENT')")
-	public List<Patient> getPatient() {
+	public List<Patient> getPatients() {
 		return registrationService.getPatient();
 	}
 	
