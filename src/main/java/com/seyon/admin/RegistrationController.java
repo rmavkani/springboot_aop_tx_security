@@ -20,22 +20,35 @@ public class RegistrationController {
 		this.registrationService = registrationService;
 	}
 
-	@GetMapping("/patient")
+	@GetMapping("/patients")
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_PATIENT')")
 	public List<Patient> getPatients() {
-		return registrationService.getPatient();
+		return registrationService.getPatients();
+	}
+
+	//seyon/user?id=101
+	@GetMapping("/patient/{id}")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_PATIENT')")
+	public Patient getPatients(@RequestParam String id, @PathVariable("patient") String patient) {
+		return registrationService.getPatient(id);
 	}
 	
-	@PostMapping
+	@PostMapping("/patient/save")
 	@PreAuthorize("hasAuthority('patient:write')")
 	public void savePatient(@RequestBody Patient patient) {
 		registrationService.savePatient(patient);
 	}
 
-	//seyon/user?id=101
-	@GetMapping("/user/{id}")
-	public List<Patient> getUser(@RequestParam String id , @PathVariable("user") String user) {		
-		return registrationService.getPatient();
+	@PutMapping("/patient/update/{id}")
+	@PreAuthorize("hasAuthority('patient:write')")
+	public void savePatient(@RequestParam String id, @RequestBody Patient patient) {
+		registrationService.updatePatient(patient);
+	}
+
+	@DeleteMapping("/patient/delete/{id}")
+	@PreAuthorize("hasAuthority('patient:write')")
+	public void savePatient(@RequestParam String id ) {
+		registrationService.deletePatient(id);
 	}
 	
 
